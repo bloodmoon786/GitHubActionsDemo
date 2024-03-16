@@ -10,8 +10,8 @@ on:
     branches: [ "master" ]
     
 env:
-  azure-app-path:'.'
-  azure-webappname:'githubactionsdemo1'
+  azure-app-path: '.'
+  azure-webappname: 'githubactionsdemo1'
    
 
 jobs:
@@ -20,24 +20,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --configuration Release
-      
-    - name: Publish
-      run: dotnet publish -c Release -o '${{env.azureapppath}}/myapp'
-      
-    - name: Deploy
-      uses: Azure/webapps-deploy@v3.0.0
-      with: ${{env.appname}}
-          
-      
-    
-    
-      run: dotnet test --no-build --verbosity normal
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --configuration Release
+      - name: Publish
+        run: dotnet publish -c Release -o '${{env.azure-app-path}}/myapp'
+      - name: Deploy
+        uses: Azure/webapps-deploy@v3.0.0
+        with:
+          app-name: ${{env.azure-webappname}}
+          slot-name: 'development'
+          publish-profile: '${{secrets.AZURE_APP_SECRET}}'
+          package: '${{env.azure-app-path}}/myapp'
